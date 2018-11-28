@@ -1,0 +1,29 @@
+version: '2'
+services:
+        db:
+                image: mysql:latest
+                environment:
+                        MYSQL_ROOT_PASSWORD: 1234
+                        MYSQL_DATABASE: test
+                        MYSQL_USER: user
+                        MYSQL_PASSWORD: 1234
+                ports:
+                        - "3306:3306"
+                volumes:
+                        - "./db:/docker-entrypoint-initdb.d"
+                restart: always
+
+        web:
+                image: tomcat:latest
+                environment:
+                        JDBC_URL: jdbc:mysql://db:3306/test?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true
+                        JDBC_USER: user
+                        JDBC_PASS: 1234
+                ports:
+                        - "80:8080"
+                volumes:
+                        - ./tomcat/webapps:/user/local/tomcat/webapps
+                links:
+                        - db
+                restart: always
+
